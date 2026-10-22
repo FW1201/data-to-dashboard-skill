@@ -1,9 +1,9 @@
 ---
-name: folder-to-apps-script-dashboard
-description: Turn a local project folder's tabular data into a verified, updating Google Sheets and Apps Script dashboard. Use when a user asks to inspect local data, deploy or update an Apps Script dashboard, and check that its live URL matches the source data.
+name: data-to-dashboard-skill
+description: Turn a local folder's tabular data into a verified, updating Google Sheets and Apps Script dashboard. Use when a user needs a data dashboard deployed and reconciled with its source files.
 ---
 
-# Folder → Apps Script dashboard
+# Data to Dashboard Skill
 
 Produce a dashboard whose live numbers can be traced to the user's folder. Treat the folder, target Script ID, spreadsheet, deployment, and refresh path as separate identities. Never infer a Script ID from a web-app deployment ID or silently reuse an old spreadsheet.
 
