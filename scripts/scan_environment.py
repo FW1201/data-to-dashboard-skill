@@ -34,6 +34,54 @@ def auth_status():
         return False
 
 
+def install_guidance(checks, publish_github):
+    """Return safe, user-run next steps; this preflight never installs or logs in."""
+    steps = []
+    if not checks["node"] or not checks["npm"]:
+        steps.append({
+            "when": "Node.js or npm is unavailable",
+            "action": "Install the current LTS release of Node.js from https://nodejs.org/ or your approved package manager, then rerun this scan.",
+            "why": "Clasp requires Node.js and npm.",
+        })
+    if not checks["clasp"]:
+        steps.append({
+            "when": "Clasp is unavailable after Node.js/npm are ready",
+            "action": "Run: npm install --global @google/clasp ; then rerun this scan.",
+            "why": "Clasp synchronizes the verified local Apps Script project.",
+        })
+    if checks["clasp"] and not checks["clasp_credentials_present"]:
+        steps.append({
+            "when": "Clasp credentials are absent",
+            "action": "Run: clasp login. Sign in with the Google account that can edit the target Apps Script project and spreadsheet. Do not place credential files in the project folder.",
+            "why": "The account identity determines which remote project can be read, pushed, and deployed.",
+        })
+    if publish_github and not checks["gh"]:
+        steps.append({
+            "when": "GitHub publication was requested and GitHub CLI is unavailable",
+            "action": "Install GitHub CLI from https://cli.github.com/ or use an authenticated GitHub connector.",
+            "why": "A publication route is needed only for the generic skill package.",
+        })
+    if publish_github and checks["gh"] and checks["gh_authenticated"] is False:
+        steps.append({
+            "when": "GitHub CLI is installed but unauthenticated",
+            "action": "Run: gh auth login, or use an authenticated GitHub connector. Verify the intended account before publishing.",
+            "why": "Avoid publishing to the wrong account or repository.",
+        })
+    steps.extend([
+        {
+            "when": "Google remote access has not yet been verified",
+            "action": "Open the supplied Apps Script editor URL, confirm the Script ID, then run a harmless read or setup function. Complete Google consent only for the stated scopes.",
+            "why": "A local login does not prove edit, spreadsheet, or deployment permission.",
+        },
+        {
+            "when": "Google shows an unverified-app warning for this user-owned script",
+            "action": "Pause for the user to review the project name, scopes, and Google account, then have the user complete the warning and Allow steps in their browser. Resume only after they confirm completion.",
+            "why": "The warning is a browser security boundary and must not be bypassed by automation.",
+        },
+    ])
+    return steps
+
+
 def script_id(value):
     if not value:
         return None
@@ -120,6 +168,7 @@ def main():
     if any(f.get("needs_parser") for f in files):
         missing.append("Install a parser or convert each XLS/XLSX/ODS source before using its values.")
     output = {"folder": str(root), "checks": checks, "files": files, "missing_or_next_actions": missing,
+              "installation_and_access_guidance": install_guidance(checks, args.publish_github),
               "remote_checks_still_required": ["Google account and Script API access", "target Script edit permission",
                                                "spreadsheet edit permission", "deployment viewer access", "OAuth scope grant"]}
     print(json.dumps(output, ensure_ascii=False, indent=2))
