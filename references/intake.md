@@ -12,6 +12,18 @@ The local scanner reports observations, not a deployment authorization. Resolve 
 | Timezone and audience | Determines dates and deployment permissions | Use a confirmed timezone; select web-app execution identity and viewer scope deliberately. |
 | Google access | Enables push, initialization, deployment, and viewing | Check Clasp login and Script API access without displaying credentials; run the project and complete Google OAuth only for required scopes. Verify the viewer can open `/exec`. |
 
-Scan formats intentionally. CSV and JSON can be inspected with Python standard library; XLSX/ODS/PDF need a suitable parser or conversion. Do not silently skip an authoritative format. Node/npm and Clasp are needed for the Clasp route; supported connectors/UI can replace Clasp. Git and GitHub authentication matter only if repository publication was requested. Report install/login steps appropriate to the current OS when absent rather than assuming the user has them.
+Scan formats intentionally. CSV and JSON can be inspected with Python standard library; XLSX/ODS/PDF need a suitable parser or conversion. Do not silently skip an authoritative format. Node/npm and Clasp are needed for the Clasp route; supported connectors/UI can replace Clasp. Git and GitHub authentication matter only if repository publication was requested.
+
+## Installation and access handoff
+
+The scan emits `installation_and_access_guidance`. Present only the items that apply, in this order: runtime, Clasp, sign-in, then remote authorization. Give the user the command or official download page and explain the immediate follow-up check. The scanner does not install software, enter credentials, or accept consent prompts.
+
+- For missing Node/npm, direct the user to the current Node.js LTS installer or their approved package manager, then rerun the scan.
+- For missing Clasp, after Node/npm are available, offer `npm install --global @google/clasp`, then rerun the scan.
+- For missing Clasp credentials, offer `clasp login`; the user must select the Google account that owns or edits both target assets.
+- For missing GitHub access, only when publishing was requested, offer GitHub CLI installation plus `gh auth login`, or an authenticated connector.
+- For Apps Script scope consent, identify the exact operations requiring access: reading/writing the chosen spreadsheet, running a setup function, installing named triggers, and serving the selected web app. If Google presents an unverified-app warning for the user's own script, the user must personally review and complete that browser warning. Do not automate the bypass.
+
+After every user-run installation, login, or consent step, rerun the relevant local or remote check. “Installed” is not a pass until the tool is executable, the intended account is visible, and the chosen project can be read.
 
 Before remote changes, preserve a local backup of the current Script and check whether a deployment already exists. Identify whether source sheets are populated; never reseed over user data. Keep credentials, `.clasprc.json`, local datasets, rendered private screenshots, and case-specific IDs out of any public skill repo.
