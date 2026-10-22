@@ -1,0 +1,3 @@
+interface:
+  display_name: "Folder → Apps Script Dashboard"
+  short_description: "從資料夾建立並驗證動態 Google 儀表板"
