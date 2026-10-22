@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.DS_Store
+.clasprc.json
+.clasp.json
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.ods
+*.pdf
