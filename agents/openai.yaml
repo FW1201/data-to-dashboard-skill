@@ -1,3 +1,4 @@
 interface:
-  display_name: "Folder → Apps Script Dashboard"
-  short_description: "從資料夾建立並驗證動態 Google 儀表板"
+  display_name: "Data to Dashboard Skill"
+  short_description: "從資料夾資料建立並驗證動態 Google 儀表板"
+  default_prompt: "Use $data-to-dashboard-skill to scan this folder, build a Google Apps Script dashboard, and verify the live result."
