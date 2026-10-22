@@ -12,6 +12,6 @@ Run the local preflight:
 python3 scripts/scan_environment.py --folder /path/to/project --script-id 'https://script.google.com/.../projects/SCRIPT_ID/edit' --spreadsheet-id 'https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit'
 ```
 
-The scanner uses Python's standard library. It reports file hashes, CSV/TSV/JSON structure, installed tools, and next actions without displaying credentials. Remote authorization, deployment access, and live data agreement still require the skill's verification steps.
+The scanner uses Python's standard library. It reports file hashes, CSV/TSV/JSON structure, installed tools, and next actions without displaying credentials. It also returns install and authorization handoff steps, including when a user must personally complete Google's unverified-app warning. Remote authorization, deployment access, and live data agreement still require the skill's verification steps.
 
 Licensed under MIT.
